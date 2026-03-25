@@ -107,12 +107,17 @@ function renderSidebar(activePage) {
         </a>
       `).join('')}
     </nav>
-    <div class="sidebar-footer">
-      <div class="sidebar-avatar">${initials}</div>
-      <div class="sidebar-user-info">
-        <span class="sidebar-user-name">${user.name}</span>
-        <span class="sidebar-user-role">${user.plan}</span>
+    <div class="sidebar-footer" style="display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:12px;overflow:hidden;">
+        <div class="sidebar-avatar">${initials}</div>
+        <div class="sidebar-user-info" style="overflow:hidden;">
+          <span class="sidebar-user-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${user.name}</span>
+          <span class="sidebar-user-role">${user.plan}</span>
+        </div>
       </div>
+      <button onclick="Auth.signOut()" title="Sign Out" style="background:none;border:none;cursor:pointer;color:var(--on-surface-variant);display:flex;align-items:center;justify-content:center;padding:8px;border-radius:var(--radius-full);">
+        <span class="material-symbols-outlined" style="font-size:20px;">logout</span>
+      </button>
     </div>
   `;
 
