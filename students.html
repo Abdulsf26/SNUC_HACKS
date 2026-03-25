@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manage student enrollments, fee structures, and academic status on Rupees Radar.">
+    <title>Rupees Radar | Student Management</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>">
+</head>
+
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+        <header class="mobile-header" id="mobile-header"></header>
+
+        <main class="main-content">
+            <div class="flex justify-between items-center mb-8 animate-slide-up">
+                <div>
+                    <p class="label-sm" style="color:var(--outline);">
+                        <span id="user-org">Central Academy</span> &bull; <span id="user-role">Master Admin</span>
+                    </p>
+                    <h1 class="page-title">Student Directory</h1>
+                    <p class="page-subtitle">Manage enrollments, fee structures, and academic status.</p>
+                </div>
+                <button class="btn btn-primary" onclick="openModal('add-student-modal')">
+                    <span class="material-symbols-outlined icon-sm">person_add</span>
+                    Add Student
+                </button>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-4 mb-8">
+                <div class="card card-elevated card-sm animate-slide-up delay-1">
+                    <div class="stat-card">
+                        <span class="label-md" style="color:var(--on-surface-variant);">Total Students</span>
+                        <span class="stat-value" id="total-students">8</span>
+                    </div>
+                </div>
+                <div class="card card-elevated card-sm animate-slide-up delay-2">
+                    <div class="stat-card">
+                        <span class="label-md" style="color:var(--on-surface-variant);">Fees Collected</span>
+                        <span class="stat-value" style="color:var(--accent-secondary);"
+                            id="fees-collected">₹24,500</span>
+                    </div>
+                </div>
+                <div class="card card-elevated card-sm animate-slide-up delay-3">
+                    <div class="stat-card">
+                        <span class="label-md" style="color:var(--on-surface-variant);">Pending Fees</span>
+                        <span class="stat-value" style="color:#856404;" id="fees-pending">₹7,000</span>
+                    </div>
+                </div>
+                <div class="card card-elevated card-sm animate-slide-up delay-4">
+                    <div class="stat-card">
+                        <span class="label-md" style="color:var(--on-surface-variant);">Overdue</span>
+                        <span class="stat-value" style="color:var(--error);" id="fees-overdue">₹2,500</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart + Insight -->
+            <div class="grid grid-2 mb-8">
+                <div class="card card-elevated animate-slide-up delay-3">
+                    <h3 class="title-lg mb-6">Fee Collection Overview</h3>
+                    <div class="chart-container" style="height:220px;">
+                        <canvas id="fee-chart"></canvas>
+                    </div>
+                </div>
+                <div class="card animate-slide-up delay-4" style="background:var(--secondary-fixed);">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="material-symbols-outlined"
+                            style="color:var(--on-secondary-fixed-variant);">eco</span>
+                        <h3 class="title-lg" style="color:var(--on-secondary-fixed-variant);">Sustainable Growth</h3>
+                    </div>
+                    <p class="body-md" style="color:var(--on-secondary-fixed-variant);line-height:1.7;">
+                        Your student retention has improved by <strong>4.2%</strong> this quarter. Consider launching
+                        the
+                        <strong>"Loyalty Scholarship"</strong> to maintain this momentum.
+                    </p>
+                    <div class="flex gap-3 mt-6">
+                        <button class="btn btn-sm" style="background:var(--on-secondary-fixed-variant);color:white;">
+                            <span class="material-symbols-outlined icon-sm">campaign</span>
+                            Launch Program
+                        </button>
+                        <button class="btn btn-sm btn-ghost" style="color:var(--on-secondary-fixed-variant);">Learn
+                            More</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search & Filter -->
+            <div class="flex justify-between items-center mb-6 animate-slide-up delay-4">
+                <div class="search-bar" style="max-width:320px;">
+                    <span class="material-symbols-outlined">search</span>
+                    <input type="text" placeholder="Search students..." id="student-search" oninput="filterStudents()">
+                </div>
+                <div class="flex gap-2">
+                    <select class="form-input"
+                        style="padding:var(--space-2) var(--space-4);border-radius:var(--radius-full);font-size:0.8125rem;"
+                        id="status-filter" onchange="filterStudents()">
+                        <option value="">All Status</option>
+                        <option value="Paid">Paid</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Overdue">Overdue</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Student Table -->
+            <div class="card card-elevated animate-slide-up delay-5">
+                <table class="data-table" id="student-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Class</th>
+                            <th>Subject</th>
+                            <th>Monthly Fee</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="student-tbody"></tbody>
+                </table>
+            </div>
+        </main>
+
+        <nav class="bottom-nav" id="bottom-nav"></nav>
+    </div>
+
+    <!-- Add/Edit Student Modal -->
+    <div class="modal-overlay" id="add-student-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="student-modal-title">Add New Student</h3>
+                <button class="modal-close" onclick="closeModal('add-student-modal')">
+                    <span class="material-symbols-outlined icon-sm">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Student Name</label>
+                    <input type="text" class="form-input" id="s-name" placeholder="Full name" required>
+                </div>
+                <div class="grid grid-2 gap-4">
+                    <div class="form-group">
+                        <label class="form-label">Class</label>
+                        <select class="form-input" id="s-class">
+                            <option value="Class 8">Class 8</option>
+                            <option value="Class 9">Class 9</option>
+                            <option value="Class 10" selected>Class 10</option>
+                            <option value="Class 11">Class 11</option>
+                            <option value="Class 12">Class 12</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Subject</label>
+                        <input type="text" class="form-input" id="s-subject" placeholder="Mathematics">
+                    </div>
+                </div>
+                <div class="grid grid-2 gap-4">
+                    <div class="form-group">
+                        <label class="form-label">Monthly Fee (₹)</label>
+                        <input type="number" class="form-input" id="s-fee" placeholder="3500">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone</label>
+                        <input type="tel" class="form-input" id="s-phone" placeholder="+91 98765 00000">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Fee Status</label>
+                    <select class="form-input" id="s-status">
+                        <option value="Paid">Paid</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Overdue">Overdue</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeModal('add-student-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveStudent()">
+                    <span class="material-symbols-outlined icon-sm">check</span>
+                    Save Student
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        let editingStudentId = null;
+
+        const avatarColors = [
+            'linear-gradient(135deg, #1b4332, #2d6a4f)',
+            'linear-gradient(135deg, #588157, #3a5a40)',
+            'linear-gradient(135deg, #344e41, #588157)',
+            'linear-gradient(135deg, #2d6a4f, #40916c)',
+            'linear-gradient(135deg, #40916c, #52b788)',
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSidebar('students');
+            const user = Store.get('user', {});
+            document.getElementById('user-org').textContent = user.business || 'Central Academy';
+            renderStudents();
+
+            // Fee collection chart
+            setTimeout(() => {
+                const chart = new SimpleChart('fee-chart');
+                chart.drawDonutChart([
+                    { label: 'Paid', value: 24500, color: '#1b4332' },
+                    { label: 'Pending', value: 7000, color: '#588157' },
+                    { label: 'Overdue', value: 2500, color: '#ba1a1a' },
+                ]);
+            }, 300);
+        });
+
+        function renderStudents() {
+            const students = Store.get('students', []);
+            const tbody = document.getElementById('student-tbody');
+
+            const paid = students.filter(s => s.status === 'Paid').reduce((t, s) => t + s.fee, 0);
+            const pending = students.filter(s => s.status === 'Pending').reduce((t, s) => t + s.fee, 0);
+            const overdue = students.filter(s => s.status === 'Overdue').reduce((t, s) => t + s.fee, 0);
+
+            document.getElementById('total-students').textContent = students.length;
+            document.getElementById('fees-collected').textContent = formatCurrency(paid);
+            document.getElementById('fees-pending').textContent = formatCurrency(pending);
+            document.getElementById('fees-overdue').textContent = formatCurrency(overdue);
+
+            tbody.innerHTML = students.map((s, i) => {
+                const initials = s.name.split(' ').map(n => n[0]).join('');
+                const chipClass = s.status === 'Paid' ? 'chip-success' : s.status === 'Pending' ? 'chip-warning' : 'chip-error';
+                return `
+          <tr>
+            <td>
+              <div class="flex items-center gap-3">
+                <div class="person-avatar" style="background:${avatarColors[i % avatarColors.length]};width:36px;height:36px;font-size:0.8125rem;">${initials}</div>
+                <div>
+                  <p class="title-sm">${s.name}</p>
+                  <p class="label-md" style="color:var(--outline);font-weight:400;">${s.phone || ''}</p>
+                </div>
+              </div>
+            </td>
+            <td class="body-sm">${s.class}</td>
+            <td class="body-sm">${s.subject}</td>
+            <td class="title-sm">${formatCurrency(s.fee)}</td>
+            <td><span class="chip ${chipClass}">${s.status}</span></td>
+            <td>
+              <div class="flex gap-2">
+                <button class="btn-icon" style="width:32px;height:32px;" onclick="editStudent(${s.id})" title="Edit">
+                  <span class="material-symbols-outlined icon-sm">edit</span>
+                </button>
+                <button class="btn-icon" style="width:32px;height:32px;" onclick="deleteStudent(${s.id})" title="Delete">
+                  <span class="material-symbols-outlined icon-sm" style="color:var(--error);">delete</span>
+                </button>
+              </div>
+            </td>
+          </tr>`;
+            }).join('');
+        }
+
+        function filterStudents() {
+            const search = document.getElementById('student-search').value.toLowerCase();
+            const statusFilter = document.getElementById('status-filter').value;
+            const students = Store.get('students', []);
+            const tbody = document.getElementById('student-tbody');
+
+            const filtered = students.filter(s => {
+                const matchSearch = s.name.toLowerCase().includes(search) || s.subject.toLowerCase().includes(search);
+                const matchStatus = !statusFilter || s.status === statusFilter;
+                return matchSearch && matchStatus;
+            });
+
+            tbody.innerHTML = filtered.map((s, i) => {
+                const initials = s.name.split(' ').map(n => n[0]).join('');
+                const chipClass = s.status === 'Paid' ? 'chip-success' : s.status === 'Pending' ? 'chip-warning' : 'chip-error';
+                return `
+          <tr>
+            <td>
+              <div class="flex items-center gap-3">
+                <div class="person-avatar" style="background:${avatarColors[i % avatarColors.length]};width:36px;height:36px;font-size:0.8125rem;">${initials}</div>
+                <div>
+                  <p class="title-sm">${s.name}</p>
+                  <p class="label-md" style="color:var(--outline);font-weight:400;">${s.phone || ''}</p>
+                </div>
+              </div>
+            </td>
+            <td class="body-sm">${s.class}</td>
+            <td class="body-sm">${s.subject}</td>
+            <td class="title-sm">${formatCurrency(s.fee)}</td>
+            <td><span class="chip ${chipClass}">${s.status}</span></td>
+            <td>
+              <div class="flex gap-2">
+                <button class="btn-icon" style="width:32px;height:32px;" onclick="editStudent(${s.id})">
+                  <span class="material-symbols-outlined icon-sm">edit</span>
+                </button>
+                <button class="btn-icon" style="width:32px;height:32px;" onclick="deleteStudent(${s.id})">
+                  <span class="material-symbols-outlined icon-sm" style="color:var(--error);">delete</span>
+                </button>
+              </div>
+            </td>
+          </tr>`;
+            }).join('');
+        }
+
+        function editStudent(id) {
+            const students = Store.get('students', []);
+            const s = students.find(s => s.id === id);
+            if (!s) return;
+
+            editingStudentId = id;
+            document.getElementById('student-modal-title').textContent = 'Edit Student';
+            document.getElementById('s-name').value = s.name;
+            document.getElementById('s-class').value = s.class;
+            document.getElementById('s-subject').value = s.subject;
+            document.getElementById('s-fee').value = s.fee;
+            document.getElementById('s-phone').value = s.phone || '';
+            document.getElementById('s-status').value = s.status;
+            openModal('add-student-modal');
+        }
+
+        function saveStudent() {
+            const name = document.getElementById('s-name').value.trim();
+            if (!name) { showToast('Please enter student name', 'warning'); return; }
+
+            const students = Store.get('students', []);
+            const data = {
+                name,
+                class: document.getElementById('s-class').value,
+                subject: document.getElementById('s-subject').value,
+                fee: parseInt(document.getElementById('s-fee').value) || 3000,
+                phone: document.getElementById('s-phone').value,
+                status: document.getElementById('s-status').value,
+                joinDate: new Date().toISOString().split('T')[0]
+            };
+
+            if (editingStudentId) {
+                const idx = students.findIndex(s => s.id === editingStudentId);
+                if (idx !== -1) { data.id = editingStudentId; students[idx] = { ...students[idx], ...data }; }
+                editingStudentId = null;
+                showToast('Student updated successfully');
+            } else {
+                data.id = Date.now();
+                students.push(data);
+                showToast('Student added successfully');
+            }
+
+            Store.set('students', students);
+            closeModal('add-student-modal');
+            renderStudents();
+
+            // Reset form
+            document.getElementById('student-modal-title').textContent = 'Add New Student';
+            document.getElementById('s-name').value = '';
+            document.getElementById('s-subject').value = '';
+            document.getElementById('s-fee').value = '';
+            document.getElementById('s-phone').value = '';
+        }
+
+        function deleteStudent(id) {
+            if (!confirm('Remove this student from the directory?')) return;
+            const students = Store.get('students', []).filter(s => s.id !== id);
+            Store.set('students', students);
+            renderStudents();
+            showToast('Student removed', 'delete');
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Rupees Radar Dashboard - Your organic financial overview at a glance.">
+    <title>Rupees Radar | Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>">
+</head>
+
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+        <header class="mobile-header" id="mobile-header"></header>
+
+        <main class="main-content">
+            <!-- Page Header -->
+            <div class="flex justify-between items-center mb-8 animate-slide-up">
+                <div>
+                    <h1 class="page-title" id="greeting">Good Evening, Arjun</h1>
+                    <p class="page-subtitle">Here's your organic financial pulse.</p>
+                </div>
+                <div class="search-bar" style="display:none;" id="desktop-search">
+                    <span class="material-symbols-outlined">search</span>
+                    <input type="text" placeholder="Search transactions...">
+                </div>
+            </div>
+
+            <!-- Top Stats -->
+            <div class="grid grid-3 mb-8">
+                <div class="card card-primary card-lg animate-slide-up delay-1">
+                    <p class="label-md" style="opacity:0.7;">Total Revenue</p>
+                    <p class="display-lg" style="margin:var(--space-2) 0;">₹4,82,900</p>
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined icon-sm"
+                            style="color:var(--primary-fixed);">trending_up</span>
+                        <span class="body-sm" style="color:var(--primary-fixed);">+12.4% from last month</span>
+                    </div>
+                </div>
+
+                <div class="card card-elevated animate-slide-up delay-2">
+                    <div class="stat-card">
+                        <span class="label-md" style="color:var(--on-surface-variant);">Net Profit</span>
+                        <span class="stat-value">₹1,12,450</span>
+                        <p class="body-sm" style="color:var(--on-surface-variant);margin-top:var(--space-2);">Calculated
+                            based on 6 months runway and debt-to-equity ratio.</p>
+                    </div>
+                </div>
+
+                <div class="card card-elevated animate-slide-up delay-3">
+                    <div class="stat-card">
+                        <span class="label-md" style="color:var(--on-surface-variant);">Cash Runway</span>
+                        <div class="flex items-center gap-3">
+                            <span class="stat-value" style="font-size:2.5rem;">8.4</span>
+                            <span class="title-md" style="color:var(--accent-secondary);">Months</span>
+                        </div>
+                        <p class="body-sm" style="color:var(--on-surface-variant);margin-top:var(--space-2);">Your
+                            business can sustain operations for over 8 months without additional income.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="grid grid-2 mb-8">
+                <div class="card card-elevated animate-slide-up delay-3">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="title-lg">Income vs Expenses</h3>
+                        <div class="flex gap-2">
+                            <button class="btn btn-sm btn-ghost active-tab"
+                                onclick="setChartPeriod(this,'6m')">6M</button>
+                            <button class="btn btn-sm btn-ghost" onclick="setChartPeriod(this,'1y')">1Y</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="income-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card card-elevated animate-slide-up delay-4">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="title-lg">Revenue Trend</h3>
+                        <span class="chip chip-success">
+                            <span class="material-symbols-outlined icon-sm">trending_up</span>
+                            +8.2%
+                        </span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="trend-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Cards -->
+            <div class="grid grid-2 mb-8">
+                <div class="card animate-slide-up delay-4">
+                    <h3 class="title-lg mb-4">
+                        <span class="material-symbols-outlined icon-sm"
+                            style="color:var(--error);vertical-align:-2px;">warning</span>
+                        Action Required
+                    </h3>
+                    <div class="flex flex-col gap-4">
+                        <div class="alert-card">
+                            <div class="alert-icon warning">
+                                <span class="material-symbols-outlined icon-sm">receipt_long</span>
+                            </div>
+                            <div style="flex:1;">
+                                <p class="title-sm">Invoice #8829 Overdue</p>
+                                <p class="body-sm" style="color:var(--on-surface-variant);">Global Tech Solutions •
+                                    ₹42,000</p>
+                            </div>
+                            <button class="btn btn-sm btn-outline">View</button>
+                        </div>
+                        <div class="alert-card">
+                            <div class="alert-icon info">
+                                <span class="material-symbols-outlined icon-sm">calendar_today</span>
+                            </div>
+                            <div style="flex:1;">
+                                <p class="title-sm">Tax Filing Deadline</p>
+                                <p class="body-sm" style="color:var(--on-surface-variant);">GST Quarterly Return due in
+                                    3 days</p>
+                            </div>
+                            <button class="btn btn-sm btn-outline">Prepare</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card animate-slide-up delay-5">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="material-symbols-outlined" style="color:var(--accent-secondary);">lightbulb</span>
+                        <h3 class="title-lg">Weekly Insight</h3>
+                    </div>
+                    <div class="card card-filled card-sm">
+                        <h4 class="title-md mb-2" style="color:var(--primary);">
+                            <span class="material-symbols-outlined icon-sm" style="vertical-align:-2px;">eco</span>
+                            Subscription Bloat Detected
+                        </h4>
+                        <p class="body-md" style="color:var(--on-surface-variant);line-height:1.6;">
+                            You have <strong>4 unused SaaS subscriptions</strong> costing <strong
+                                style="color:var(--error);">₹8,400 monthly</strong>.
+                            Canceling these would increase your annual runway by <strong
+                                style="color:var(--accent-secondary);">4 days</strong>.
+                        </p>
+                        <button class="btn btn-sm btn-secondary mt-4">
+                            <span class="material-symbols-outlined icon-sm">visibility</span>
+                            Review Subscriptions
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card card-elevated animate-slide-up delay-5">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="title-lg">Recent Transactions</h3>
+                    <button class="btn btn-ghost btn-sm">View All</button>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Transaction</th>
+                            <th>Category</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="flex items-center gap-3">
+                                <div class="alert-icon success" style="width:32px;height:32px;">
+                                    <span class="material-symbols-outlined icon-sm">arrow_downward</span>
+                                </div>
+                                <span class="title-sm">Student Fee - Aarav S.</span>
+                            </td>
+                            <td><span class="chip chip-info">Tuition</span></td>
+                            <td class="body-sm" style="color:var(--on-surface-variant);">Dec 20, 2025</td>
+                            <td class="title-sm" style="color:var(--accent-secondary);">+₹3,500</td>
+                            <td><span class="chip chip-success">Received</span></td>
+                        </tr>
+                        <tr>
+                            <td class="flex items-center gap-3">
+                                <div class="alert-icon warning" style="width:32px;height:32px;">
+                                    <span class="material-symbols-outlined icon-sm">arrow_upward</span>
+                                </div>
+                                <span class="title-sm">Electricity Bill</span>
+                            </td>
+                            <td><span class="chip chip-neutral">Utilities</span></td>
+                            <td class="body-sm" style="color:var(--on-surface-variant);">Dec 18, 2025</td>
+                            <td class="title-sm" style="color:var(--error);">-₹12,000</td>
+                            <td><span class="chip chip-warning">Pending</span></td>
+                        </tr>
+                        <tr>
+                            <td class="flex items-center gap-3">
+                                <div class="alert-icon success" style="width:32px;height:32px;">
+                                    <span class="material-symbols-outlined icon-sm">arrow_downward</span>
+                                </div>
+                                <span class="title-sm">Student Fee - Priya P.</span>
+                            </td>
+                            <td><span class="chip chip-info">Tuition</span></td>
+                            <td class="body-sm" style="color:var(--on-surface-variant);">Dec 15, 2025</td>
+                            <td class="title-sm" style="color:var(--accent-secondary);">+₹4,000</td>
+                            <td><span class="chip chip-success">Received</span></td>
+                        </tr>
+                        <tr>
+                            <td class="flex items-center gap-3">
+                                <div class="alert-icon warning" style="width:32px;height:32px;">
+                                    <span class="material-symbols-outlined icon-sm">arrow_upward</span>
+                                </div>
+                                <span class="title-sm">Software License - Adobe</span>
+                            </td>
+                            <td><span class="chip chip-neutral">Technology</span></td>
+                            <td class="body-sm" style="color:var(--on-surface-variant);">Dec 12, 2025</td>
+                            <td class="title-sm" style="color:var(--error);">-₹4,200</td>
+                            <td><span class="chip chip-error">Overdue</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+        <nav class="bottom-nav" id="bottom-nav"></nav>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSidebar('dashboard');
+
+            // Set greeting based on time
+            const hour = new Date().getHours();
+            const user = Store.get('user', { name: 'Arjun' });
+            const firstName = user.name.split(' ')[0];
+            let greeting = 'Good Evening';
+            if (hour < 12) greeting = 'Good Morning';
+            else if (hour < 17) greeting = 'Good Afternoon';
+            document.getElementById('greeting').textContent = `${greeting}, ${firstName}`;
+
+            // Render charts
+            setTimeout(() => {
+                // Income vs Expenses Bar Chart
+                const incomeChart = new SimpleChart('income-chart');
+                incomeChart.drawBarChart([
+                    { label: 'Jul', values: [68000, 42000] },
+                    { label: 'Aug', values: [72000, 38000] },
+                    { label: 'Sep', values: [84000, 45000] },
+                    { label: 'Oct', values: [78000, 52000] },
+                    { label: 'Nov', values: [92000, 48000] },
+                    { label: 'Dec', values: [96000, 44000] },
+                ]);
+
+                // Revenue Trend Line Chart
+                const trendChart = new SimpleChart('trend-chart');
+                trendChart.drawLineChart({
+                    labels: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    values: [68000, 72000, 84000, 78000, 92000, 96000]
+                });
+            }, 300);
+        });
+
+        function setChartPeriod(btn, period) {
+            btn.parentElement.querySelectorAll('.btn').forEach(b => b.classList.remove('active-tab'));
+            btn.classList.add('active-tab');
+        }
+    </script>
+</body>
+
+</html>

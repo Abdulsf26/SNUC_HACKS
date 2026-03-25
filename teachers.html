@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manage faculty, payroll, and credentials on Rupees Radar.">
+    <title>Teacher Management | Rupees Radar</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>">
+</head>
+
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+        <header class="mobile-header" id="mobile-header"></header>
+
+        <main class="main-content">
+            <div class="flex justify-between items-center mb-8 animate-slide-up">
+                <div>
+                    <p class="label-sm" style="color:var(--outline);">Admin User &bull; Headmaster Office</p>
+                    <h1 class="page-title">Faculty Directory</h1>
+                    <p class="page-subtitle">Monitor professional qualifications, payroll status, and faculty
+                        credentials.</p>
+                </div>
+                <button class="btn btn-primary" onclick="openModal('add-teacher-modal')">
+                    <span class="material-symbols-outlined icon-sm">person_add</span>
+                    Add Teacher
+                </button>
+            </div>
+
+            <!-- Stats Row -->
+            <div class="grid grid-3 mb-8">
+                <div class="card card-elevated card-sm animate-slide-up delay-1">
+                    <div class="stat-card">
+                        <span class="label-md" style="color:var(--on-surface-variant);">Total Faculty</span>
+                        <span class="stat-value" id="total-teachers">42</span>
+                    </div>
+                </div>
+                <div class="card card-elevated card-sm animate-slide-up delay-2">
+                    <div class="stat-card">
+                        <span class="label-md" style="color:var(--on-surface-variant);">Total Monthly Payroll</span>
+                        <span class="stat-value" id="total-payroll">₹ 14.2L</span>
+                    </div>
+                </div>
+                <div class="card card-elevated card-sm animate-slide-up delay-3">
+                    <div class="flex justify-between items-center">
+                        <div class="stat-card">
+                            <span class="label-md" style="color:var(--on-surface-variant);">Reports</span>
+                            <span class="title-md" style="color:var(--primary);">Q3 Performance</span>
+                        </div>
+                        <button class="btn btn-sm btn-secondary" onclick="showToast('Report generated!')">
+                            <span class="material-symbols-outlined icon-sm">description</span>
+                            Generate
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Teacher Cards Grid -->
+            <div class="grid grid-2 mb-8">
+                <div class="card card-elevated animate-slide-up delay-2">
+                    <h3 class="title-lg mb-6">Manage Teachers</h3>
+                    <div class="flex flex-col gap-4" id="teacher-list"></div>
+                </div>
+
+                <!-- Payroll Chart -->
+                <div class="card card-elevated animate-slide-up delay-3">
+                    <h3 class="title-lg mb-6">Faculty Payroll Optimization</h3>
+                    <p class="body-sm mb-4" style="color:var(--on-surface-variant);">Review the annual growth projection
+                        of faculty costs based on current qualification upgrades.</p>
+                    <div class="chart-container" style="height:240px;">
+                        <canvas id="payroll-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Credentials Alert -->
+            <div class="card animate-slide-up delay-4">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="material-symbols-outlined" style="color:var(--accent-secondary);">verified_user</span>
+                    <h3 class="title-lg">Credentials Expiring</h3>
+                </div>
+                <div class="grid grid-2 gap-4">
+                    <div class="credential-item">
+                        <div class="credential-icon warning">
+                            <span class="material-symbols-outlined icon-sm">warning</span>
+                        </div>
+                        <div style="flex:1;">
+                            <p class="title-sm">Safety Certification</p>
+                            <p class="body-sm" style="color:var(--on-surface-variant);">Fire safety and first aid
+                                compliance</p>
+                        </div>
+                        <span class="chip chip-error">2 Days Left</span>
+                    </div>
+                    <div class="credential-item">
+                        <div class="credential-icon pending">
+                            <span class="material-symbols-outlined icon-sm">pending</span>
+                        </div>
+                        <div style="flex:1;">
+                            <p class="title-sm">Teaching License</p>
+                            <p class="body-sm" style="color:var(--on-surface-variant);">State board renewal application
+                            </p>
+                        </div>
+                        <span class="chip chip-warning">In Review</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <nav class="bottom-nav" id="bottom-nav"></nav>
+    </div>
+
+    <!-- Add/Edit Teacher Modal -->
+    <div class="modal-overlay" id="add-teacher-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="teacher-modal-title">Add New Teacher</h3>
+                <button class="modal-close" onclick="closeModal('add-teacher-modal')">
+                    <span class="material-symbols-outlined icon-sm">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-input" id="t-name" placeholder="Dr. Amrita Singh">
+                </div>
+                <div class="grid grid-2 gap-4">
+                    <div class="form-group">
+                        <label class="form-label">Department</label>
+                        <input type="text" class="form-input" id="t-department" placeholder="Mathematics">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Salary (₹)</label>
+                        <input type="number" class="form-input" id="t-salary" placeholder="85000">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Qualification</label>
+                    <input type="text" class="form-input" id="t-qualification" placeholder="Ph.D Mathematics">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select class="form-input" id="t-status">
+                        <option value="Active">Active</option>
+                        <option value="On Leave">On Leave</option>
+                        <option value="Resigned">Resigned</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeModal('add-teacher-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveTeacher()">
+                    <span class="material-symbols-outlined icon-sm">check</span>
+                    Save Teacher
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        const tAvatarColors = [
+            'linear-gradient(135deg, #1b4332, #2d6a4f)',
+            'linear-gradient(135deg, #588157, #3a5a40)',
+            'linear-gradient(135deg, #344e41, #588157)',
+            'linear-gradient(135deg, #2d6a4f, #40916c)',
+        ];
+
+        let editingTeacherId = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSidebar('teachers');
+            renderTeachers();
+
+            setTimeout(() => {
+                const chart = new SimpleChart('payroll-chart');
+                chart.drawBarChart([
+                    { label: 'Q1', values: [1280000, 1180000] },
+                    { label: 'Q2', values: [1320000, 1210000] },
+                    { label: 'Q3', values: [1420000, 1280000] },
+                    { label: 'Q4 (est)', values: [1480000, 1350000] },
+                ]);
+            }, 300);
+        });
+
+        function renderTeachers() {
+            const teachers = Store.get('teachers', []);
+            const list = document.getElementById('teacher-list');
+
+            const totalPayroll = teachers.reduce((t, t2) => t + t2.salary, 0);
+            document.getElementById('total-teachers').textContent = teachers.length + 38; // additional
+            document.getElementById('total-payroll').textContent = formatCurrencyShort(totalPayroll + 1173000);
+
+            list.innerHTML = teachers.map((t, i) => {
+                const initials = t.name.split(' ').filter(n => n.length > 1).map(n => n[0]).join('');
+                const statusChip = t.status === 'Active' ? 'chip-success' : t.status === 'On Leave' ? 'chip-warning' : 'chip-error';
+                return `
+          <div class="person-card" onclick="editTeacher(${t.id})" style="cursor:pointer;">
+            <div class="person-avatar" style="background:${tAvatarColors[i % tAvatarColors.length]};">${initials}</div>
+            <div class="person-info">
+              <p class="person-name">${t.name}</p>
+              <p class="person-role">${t.department}</p>
+            </div>
+            <div class="text-right">
+              <p class="person-salary">${formatCurrency(t.salary)}</p>
+              <span class="chip ${statusChip}" style="font-size:0.625rem;">${t.status}</span>
+            </div>
+          </div>`;
+            }).join('');
+        }
+
+        function editTeacher(id) {
+            const teachers = Store.get('teachers', []);
+            const t = teachers.find(t => t.id === id);
+            if (!t) return;
+
+            editingTeacherId = id;
+            document.getElementById('teacher-modal-title').textContent = 'Edit Teacher';
+            document.getElementById('t-name').value = t.name;
+            document.getElementById('t-department').value = t.department;
+            document.getElementById('t-salary').value = t.salary;
+            document.getElementById('t-qualification').value = t.qualification;
+            document.getElementById('t-status').value = t.status;
+            openModal('add-teacher-modal');
+        }
+
+        function saveTeacher() {
+            const name = document.getElementById('t-name').value.trim();
+            if (!name) { showToast('Please enter teacher name', 'warning'); return; }
+
+            const teachers = Store.get('teachers', []);
+            const data = {
+                name,
+                department: document.getElementById('t-department').value,
+                salary: parseInt(document.getElementById('t-salary').value) || 50000,
+                qualification: document.getElementById('t-qualification').value,
+                status: document.getElementById('t-status').value,
+                joinDate: new Date().toISOString().split('T')[0]
+            };
+
+            if (editingTeacherId) {
+                const idx = teachers.findIndex(t => t.id === editingTeacherId);
+                if (idx !== -1) { data.id = editingTeacherId; teachers[idx] = { ...teachers[idx], ...data }; }
+                editingTeacherId = null;
+                showToast('Teacher updated successfully');
+            } else {
+                data.id = Date.now();
+                teachers.push(data);
+                showToast('Teacher added successfully');
+            }
+
+            Store.set('teachers', teachers);
+            closeModal('add-teacher-modal');
+            renderTeachers();
+
+            // Reset form
+            document.getElementById('teacher-modal-title').textContent = 'Add New Teacher';
+            ['t-name', 't-department', 't-salary', 't-qualification'].forEach(id => document.getElementById(id).value = '');
+        }
+    </script>
+</body>
+
+</html>

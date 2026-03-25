@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Set up your tutor profile on Rupees Radar to start tracking student growth.">
+    <title>Tutor Setup - Rupees Radar</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>">
+</head>
+
+<body>
+    <div class="setup-layout">
+        <!-- Sidebar -->
+        <div class="setup-sidebar">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="sidebar-brand-icon" style="width:36px;height:36px;font-size:18px;">
+                    <span class="material-symbols-outlined" style="font-size:18px;">eco</span>
+                </div>
+                <div>
+                    <div class="sidebar-brand-name" style="font-size:0.9375rem;">Rupees Radar</div>
+                    <div class="sidebar-brand-sub">The Organic Ledger</div>
+                </div>
+            </div>
+
+            <div style="margin-top:var(--space-8);">
+                <div class="card-sm" style="background:var(--primary-fixed);margin-bottom:var(--space-6);">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="material-symbols-outlined icon-sm"
+                            style="color:var(--primary);">auto_stories</span>
+                        <span class="title-sm" style="color:var(--primary);">Organic Ledger</span>
+                    </div>
+                    <p class="body-sm" style="color:var(--on-primary-fixed-variant);">Automated expense tracking for
+                        your supplies.</p>
+                </div>
+                <div class="card-sm" style="background:var(--secondary-fixed);">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="material-symbols-outlined icon-sm"
+                            style="color:var(--on-secondary-fixed-variant);">local_florist</span>
+                        <span class="title-sm" style="color:var(--on-secondary-fixed-variant);">Student Bloom</span>
+                    </div>
+                    <p class="body-sm" style="color:var(--on-secondary-fixed-variant);opacity:0.8;">Monitor individual
+                        progress and tuition cycles.</p>
+                </div>
+            </div>
+
+            <div class="setup-steps" id="step-indicators">
+                <div class="setup-step active" data-step="1">
+                    <div class="setup-step-number">1</div>
+                    Profile Setup
+                </div>
+                <div class="setup-step" data-step="2">
+                    <div class="setup-step-number">2</div>
+                    Business Details
+                </div>
+                <div class="setup-step" data-step="3">
+                    <div class="setup-step-number">3</div>
+                    Preferences
+                </div>
+            </div>
+
+            <div style="margin-top:auto;">
+                <a href="dashboard.html" class="sidebar-link" style="color:var(--outline);">
+                    <span class="material-symbols-outlined">dashboard</span> Dashboard
+                </a>
+                <a href="students.html" class="sidebar-link" style="color:var(--outline);">
+                    <span class="material-symbols-outlined">school</span> Students
+                </a>
+                <a href="expenses.html" class="sidebar-link" style="color:var(--outline);">
+                    <span class="material-symbols-outlined">payments</span> Expenses
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Setup Area -->
+        <div class="setup-main">
+            <div class="setup-form animate-slide-up">
+                <h1 class="headline-lg mb-2" style="color:var(--primary);">Grow your Tutor Profile</h1>
+                <p class="body-md mb-8" style="color:var(--on-surface-variant);">
+                    Join the digital greenhouse. Define your tuition parameters to start tracking student growth and
+                    organic revenue.
+                </p>
+
+                <div class="progress-bar mb-8">
+                    <div class="progress-fill" id="progress-fill" style="width:33%"></div>
+                </div>
+                <p class="label-sm mb-6" style="color:var(--outline);" id="step-label">Step 1 of 3: Profile Setup</p>
+
+                <!-- Step 1: Profile -->
+                <div id="step-1" class="step-content">
+                    <div class="flex flex-col gap-5">
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-input" id="setup-name" placeholder="Dr. Priya Sharma"
+                                value="">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" class="form-input" id="setup-phone" placeholder="+91 98765 43210">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Qualification</label>
+                            <input type="text" class="form-input" id="setup-qualification"
+                                placeholder="M.Sc Mathematics">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Years of Experience</label>
+                            <select class="form-input" id="setup-experience">
+                                <option value="">Select experience range</option>
+                                <option value="0-2">0-2 years</option>
+                                <option value="3-5">3-5 years</option>
+                                <option value="6-10">6-10 years</option>
+                                <option value="10+">10+ years</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Business Details -->
+                <div id="step-2" class="step-content" style="display:none;">
+                    <div class="flex flex-col gap-5">
+                        <div class="form-group">
+                            <label class="form-label">Tuition Center Name</label>
+                            <input type="text" class="form-input" id="setup-center" placeholder="Central Academy">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Address</label>
+                            <textarea class="form-input" id="setup-address"
+                                placeholder="123 Learning Lane, Mumbai 400001"></textarea>
+                        </div>
+                        <div class="grid grid-2 gap-4">
+                            <div class="form-group">
+                                <label class="form-label">Max Students</label>
+                                <input type="number" class="form-input" id="setup-max-students" placeholder="50">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Monthly Fee (₹)</label>
+                                <input type="number" class="form-input" id="setup-fee" placeholder="3500">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Subjects Offered</label>
+                            <input type="text" class="form-input" id="setup-subjects"
+                                placeholder="Mathematics, Physics, Chemistry">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Preferences -->
+                <div id="step-3" class="step-content" style="display:none;">
+                    <div class="flex flex-col gap-5">
+                        <div class="form-group">
+                            <label class="form-label">Preferred Currency</label>
+                            <select class="form-input" id="setup-currency">
+                                <option value="INR">₹ Indian Rupee (INR)</option>
+                                <option value="USD">$ US Dollar (USD)</option>
+                                <option value="GBP">£ British Pound (GBP)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Academic Year Start</label>
+                            <select class="form-input" id="setup-academic-year">
+                                <option value="april">April</option>
+                                <option value="january">January</option>
+                                <option value="june">June</option>
+                                <option value="september">September</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center justify-between"
+                            style="padding:var(--space-4);background:var(--surface-container-highest);border-radius:var(--radius-md);">
+                            <div>
+                                <p class="title-sm">Email Notifications</p>
+                                <p class="body-sm" style="color:var(--on-surface-variant);">Receive fee reminders and
+                                    insights</p>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between"
+                            style="padding:var(--space-4);background:var(--surface-container-highest);border-radius:var(--radius-md);">
+                            <div>
+                                <p class="title-sm">SMS Alerts</p>
+                                <p class="body-sm" style="color:var(--on-surface-variant);">Send payment reminders to
+                                    students</p>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="flex justify-between mt-8">
+                    <button class="btn btn-ghost" id="btn-back" onclick="prevStep()" style="visibility:hidden;">
+                        <span class="material-symbols-outlined icon-sm">arrow_back</span>
+                        Back
+                    </button>
+                    <button class="btn btn-primary" id="btn-next" onclick="nextStep()">
+                        Continue
+                        <span class="material-symbols-outlined icon-sm">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        let currentStep = 1;
+        const totalSteps = 3;
+
+        function updateStep() {
+            // Show/hide steps
+            for (let i = 1; i <= totalSteps; i++) {
+                document.getElementById(`step-${i}`).style.display = i === currentStep ? 'block' : 'none';
+            }
+
+            // Update progress
+            const pct = (currentStep / totalSteps) * 100;
+            document.getElementById('progress-fill').style.width = pct + '%';
+
+            // Update label
+            const labels = ['Profile Setup', 'Business Details', 'Preferences'];
+            document.getElementById('step-label').textContent = `Step ${currentStep} of ${totalSteps}: ${labels[currentStep - 1]}`;
+
+            // Update step indicators
+            document.querySelectorAll('.setup-step').forEach(el => {
+                const step = parseInt(el.dataset.step);
+                el.classList.remove('active', 'completed');
+                if (step === currentStep) el.classList.add('active');
+                else if (step < currentStep) el.classList.add('completed');
+            });
+
+            // Back button
+            document.getElementById('btn-back').style.visibility = currentStep === 1 ? 'hidden' : 'visible';
+
+            // Next button text
+            const btnNext = document.getElementById('btn-next');
+            if (currentStep === totalSteps) {
+                btnNext.innerHTML = '<span class="material-symbols-outlined icon-sm">check</span> Complete Setup';
+            } else {
+                btnNext.innerHTML = 'Continue <span class="material-symbols-outlined icon-sm">arrow_forward</span>';
+            }
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateStep();
+            } else {
+                // Complete setup
+                const user = Store.get('user');
+                if (user) {
+                    user.name = document.getElementById('setup-name').value || user.name;
+                    user.phone = document.getElementById('setup-phone').value || user.phone;
+                    Store.set('user', user);
+                }
+                window.location.href = 'dashboard.html';
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStep();
+            }
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = Store.get('user', {});
+            if (user.name) document.getElementById('setup-name').value = user.name;
+            if (user.phone) document.getElementById('setup-phone').value = user.phone;
+            updateStep();
+        });
+    </script>
+</body>
+
+</html>

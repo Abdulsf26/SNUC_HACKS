@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Select your business sector to tailor your Rupees Radar experience.">
+    <title>Rupees Radar - Sector Selection</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>">
+</head>
+
+<body>
+    <div class="sector-page">
+        <div class="text-center animate-slide-up" style="max-width:600px;">
+            <div class="flex items-center justify-center gap-3 mb-6">
+                <span class="material-symbols-outlined"
+                    style="font-size:28px;color:var(--primary-container);">eco</span>
+                <span
+                    style="font-family:var(--font-headline);font-weight:700;font-size:1.125rem;color:var(--primary);">Rupees
+                    Radar</span>
+            </div>
+            <h1 class="display-md mb-4" style="color:var(--on-surface);">Select your business sector.</h1>
+            <p class="body-lg" style="color:var(--on-surface-variant);max-width:480px;margin:0 auto;">
+                Tailor your financial insights to your specific craft. We'll set up your organic ledger based on how you
+                grow.
+            </p>
+        </div>
+
+        <div class="sector-grid">
+            <div class="sector-card animate-slide-up delay-1" onclick="selectSector(this, 'Tutor')">
+                <div class="sector-card-icon">
+                    <span class="material-symbols-outlined">school</span>
+                </div>
+                <h3 class="sector-card-title">Tutor</h3>
+                <p class="sector-card-desc">Manage student fees, schedules, and learning materials.</p>
+            </div>
+
+            <div class="sector-card animate-slide-up delay-2" onclick="selectSector(this, 'Tailor')">
+                <div class="sector-card-icon">
+                    <span class="material-symbols-outlined">design_services</span>
+                </div>
+                <h3 class="sector-card-title">Tailor</h3>
+                <p class="sector-card-desc">Track fabric costs, measurements, and custom orders.</p>
+            </div>
+
+            <div class="sector-card animate-slide-up delay-3" onclick="selectSector(this, 'Mehendi')">
+                <div class="sector-card-icon">
+                    <span class="material-symbols-outlined">palette</span>
+                </div>
+                <h3 class="sector-card-title">Mehendi</h3>
+                <p class="sector-card-desc">Organize seasonal bookings and henna supplies.</p>
+            </div>
+
+            <div class="sector-card animate-slide-up delay-4" onclick="selectSector(this, 'Baker')">
+                <div class="sector-card-icon">
+                    <span class="material-symbols-outlined">bakery_dining</span>
+                </div>
+                <h3 class="sector-card-title">Baker</h3>
+                <p class="sector-card-desc">Monitor ingredient inventory and daily fresh sales.</p>
+            </div>
+
+            <div class="sector-card animate-slide-up delay-5" onclick="selectSector(this, 'Jewellery')">
+                <div class="sector-card-icon">
+                    <span class="material-symbols-outlined">diamond</span>
+                </div>
+                <h3 class="sector-card-title">Jewellery</h3>
+                <p class="sector-card-desc">Valuation, precious metals, and artisan craft tracking.</p>
+            </div>
+
+            <div class="sector-card animate-slide-up delay-6" onclick="selectSector(this, 'Others')">
+                <div class="sector-card-icon">
+                    <span class="material-symbols-outlined">category</span>
+                </div>
+                <h3 class="sector-card-title">Others</h3>
+                <p class="sector-card-desc">General ledger for any unique artisan business.</p>
+            </div>
+        </div>
+
+        <button class="btn btn-primary btn-lg" id="continue-btn" onclick="continueSector()"
+            style="opacity:0.5;pointer-events:none;">
+            <span class="material-symbols-outlined icon-sm">arrow_forward</span>
+            Continue to Setup
+        </button>
+
+        <div class="card animate-slide-up delay-6"
+            style="max-width:600px;margin-top:var(--space-8);background:var(--surface-container-low);">
+            <h3 class="title-md mb-2" style="color:var(--primary);">
+                <span class="material-symbols-outlined icon-sm" style="vertical-align:-2px;">info</span>
+                Why define your sector?
+            </h3>
+            <p class="body-sm" style="color:var(--on-surface-variant);">
+                Rupees Radar uses specific tax categories and expense templates based on your trade. Whether you're
+                buying flour or silk, we ensure your "Digital Greenhouse" flourishes with the right data nutrients.
+            </p>
+        </div>
+
+        <div class="flex justify-center gap-6 mt-8">
+            <a href="#" class="label-md" style="color:var(--outline);">Privacy</a>
+            <a href="#" class="label-md" style="color:var(--outline);">Terms</a>
+            <a href="#" class="label-md" style="color:var(--outline);">Support</a>
+        </div>
+        <p class="label-sm mt-4" style="color:var(--outline);">© 2024 Rupees Radar. All botanical rights reserved.</p>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        let selectedSector = null;
+
+        function selectSector(el, sector) {
+            document.querySelectorAll('.sector-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedSector = sector;
+
+            const btn = document.getElementById('continue-btn');
+            btn.style.opacity = '1';
+            btn.style.pointerEvents = 'auto';
+        }
+
+        function continueSector() {
+            if (selectedSector) {
+                const user = Store.get('user');
+                if (user) {
+                    user.sector = selectedSector;
+                    Store.set('user', user);
+                }
+                window.location.href = 'setup.html';
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Rupees Radar - Sign in to your digital greenhouse. Organic financial management for artisans and entrepreneurs.">
+  <title>Rupees Radar - Sign In</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>">
+</head>
+
+<body>
+  <div class="auth-layout">
+    <!-- Hero Side -->
+    <div class="auth-hero">
+      <div style="position:relative;z-index:1;">
+        <div class="flex items-center gap-3 mb-8" style="opacity:0.9">
+          <span class="material-symbols-outlined" style="font-size:32px;">eco</span>
+          <span style="font-family:var(--font-headline);font-size:1.25rem;font-weight:700;">Rupees Radar</span>
+        </div>
+        <h1 class="display-md mb-4" style="max-width:420px;">Cultivate your financial clarity.</h1>
+        <p class="body-lg" style="opacity:0.8;max-width:380px;">Join thousands of artisans and entrepreneurs managing
+          their growth with our organic ledger.</p>
+
+        <div class="auth-testimonial animate-slide-up delay-3">
+          <p class="auth-testimonial-text">"Since using Rupees Radar, my tailoring business has seen 40% more efficiency
+            in expense tracking. It's calm, focused, and professional."</p>
+          <p class="auth-testimonial-author">Arjun Mehta</p>
+          <p class="auth-testimonial-role">Artisan Weaver</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Side -->
+    <div class="auth-form-side">
+      <div class="auth-form-container animate-slide-up">
+        <div id="auth-forms">
+          <!-- Login Form -->
+          <div id="login-form">
+            <h2 class="headline-lg mb-2">Welcome Back</h2>
+            <p class="body-md mb-8" style="color:var(--on-surface-variant);">Sign in to your digital greenhouse.</p>
+
+            <form onsubmit="handleLogin(event)" class="flex flex-col gap-5">
+              <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" class="form-input" placeholder="arjun@example.com" id="login-email" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label flex justify-between">
+                  Password
+                  <a href="#" style="font-weight:400;font-size:0.75rem;">Forgot?</a>
+                </label>
+                <input type="password" class="form-input" placeholder="••••••••" id="login-password" required>
+              </div>
+              <button type="submit" class="btn btn-primary btn-lg w-full justify-center mt-2">
+                <span class="material-symbols-outlined icon-sm">login</span>
+                Sign In
+              </button>
+            </form>
+
+            <p class="body-sm text-center mt-6" style="color:var(--on-surface-variant);">
+              New to the community?
+              <a href="#" onclick="toggleAuth(event, 'register');" style="font-weight:600;">Create an account</a>
+            </p>
+          </div>
+
+          <!-- Register Form -->
+          <div id="register-form" style="display:none;">
+            <h2 class="headline-lg mb-2">Start Growing</h2>
+            <p class="body-md mb-8" style="color:var(--on-surface-variant);">Create your organic ledger account.</p>
+
+            <form onsubmit="handleRegister(event)" class="flex flex-col gap-5">
+              <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-input" placeholder="Arjun Mehta" id="reg-name" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" class="form-input" placeholder="arjun@example.com" id="reg-email" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" placeholder="••••••••" id="reg-password" required
+                  minlength="6">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Business Name</label>
+                <input type="text" class="form-input" placeholder="My Tuition Center" id="reg-business" required>
+              </div>
+              <button type="submit" class="btn btn-primary btn-lg w-full justify-center mt-2">
+                <span class="material-symbols-outlined icon-sm">eco</span>
+                Create Account
+              </button>
+            </form>
+
+            <p class="body-sm text-center mt-6" style="color:var(--on-surface-variant);">
+              Already have an account?
+              <a href="#" onclick="toggleAuth(event, 'login');" style="font-weight:600;">Sign in</a>
+            </p>
+          </div>
+        </div>
+
+        <div class="flex justify-center gap-6 mt-8" style="padding-top:var(--space-6);">
+          <a href="#" class="label-md" style="color:var(--outline);">Privacy</a>
+          <a href="#" class="label-md" style="color:var(--outline);">Terms</a>
+          <a href="#" class="label-md" style="color:var(--outline);">Help Center</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    function toggleAuth(e, form) {
+      e.preventDefault();
+      document.getElementById('login-form').style.display = form === 'login' ? 'block' : 'none';
+      document.getElementById('register-form').style.display = form === 'register' ? 'block' : 'none';
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+
+      if (email && password) {
+        initDefaultData();
+        const user = Store.get('user');
+        if (user) {
+          user.email = email;
+          Store.set('user', user);
+        }
+        Store.set('loggedIn', true);
+        window.location.href = 'dashboard.html';
+      }
+    }
+
+    function handleRegister(e) {
+      e.preventDefault();
+      const name = document.getElementById('reg-name').value;
+      const email = document.getElementById('reg-email').value;
+      const business = document.getElementById('reg-business').value;
+
+      initDefaultData();
+      const user = Store.get('user');
+      user.name = name;
+      user.email = email;
+      user.business = business;
+      Store.set('user', user);
+      Store.set('loggedIn', true);
+
+      window.location.href = 'sector.html';
+    }
+
+    // Check if already logged in
+    document.addEventListener('DOMContentLoaded', () => {
+      initDefaultData();
+    });
+  </script>
+</body>
+
+</html>

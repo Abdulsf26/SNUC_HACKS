@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manage your Rupees Radar settings, profile, and security preferences.">
+    <title>Settings | Rupees Radar</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>">
+</head>
+
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+        <header class="mobile-header" id="mobile-header"></header>
+
+        <main class="main-content">
+            <div class="animate-slide-up">
+                <h1 class="page-title">Settings</h1>
+                <p class="page-subtitle">Manage your digital greenhouse and security preferences.</p>
+            </div>
+
+            <!-- Settings Layout -->
+            <div class="grid grid-3 mt-8" style="grid-template-columns: 220px 1fr;">
+                <!-- Settings Nav -->
+                <div class="animate-slide-up delay-1">
+                    <nav class="flex flex-col gap-1">
+                        <button class="sidebar-link active" onclick="switchTab(this, 'general')" data-tab="general">
+                            <span class="material-symbols-outlined icon-sm">tune</span>
+                            General
+                        </button>
+                        <button class="sidebar-link" onclick="switchTab(this, 'profile')" data-tab="profile">
+                            <span class="material-symbols-outlined icon-sm">person</span>
+                            Profile
+                        </button>
+                        <button class="sidebar-link" onclick="switchTab(this, 'security')" data-tab="security">
+                            <span class="material-symbols-outlined icon-sm">security</span>
+                            Security
+                        </button>
+                        <button class="sidebar-link" onclick="switchTab(this, 'notifications')"
+                            data-tab="notifications">
+                            <span class="material-symbols-outlined icon-sm">notifications</span>
+                            Notifications
+                        </button>
+                    </nav>
+
+                    <!-- Storage Usage -->
+                    <div class="card card-sm mt-8" style="background:var(--surface-container-high);">
+                        <h4 class="title-sm mb-3">Storage Usage</h4>
+                        <div class="storage-bar mb-2">
+                            <div class="storage-fill" style="width:75%"></div>
+                        </div>
+                        <p class="body-sm" style="color:var(--on-surface-variant);">7.5 GB of 10 GB used</p>
+                        <p class="body-sm mt-2" style="color:var(--on-surface-variant);">Clean up old receipts to free
+                            up space.</p>
+                    </div>
+
+                    <!-- Support -->
+                    <div class="card card-sm mt-4" style="background:var(--primary-fixed);">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="material-symbols-outlined icon-sm"
+                                style="color:var(--primary);">support_agent</span>
+                            <h4 class="title-sm" style="color:var(--primary);">Need Help?</h4>
+                        </div>
+                        <p class="body-sm" style="color:var(--on-primary-fixed-variant);">Contact our dedicated support
+                            curators.</p>
+                        <button class="btn btn-sm btn-primary mt-3 w-full justify-center">
+                            <span class="material-symbols-outlined icon-sm">mail</span>
+                            Contact Support
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Settings Content -->
+                <div class="animate-slide-up delay-2">
+                    <!-- General Tab -->
+                    <div id="tab-general" class="settings-tab">
+                        <div class="card card-elevated card-lg mb-6">
+                            <h2 class="headline-md mb-6">Profile Details</h2>
+
+                            <!-- Logo Upload -->
+                            <div class="flex items-center gap-6 mb-8"
+                                style="padding:var(--space-6);background:var(--surface-container-high);border-radius:var(--radius-lg);">
+                                <div
+                                    style="width:72px;height:72px;border-radius:var(--radius-lg);background:linear-gradient(135deg,var(--primary),var(--primary-container));display:flex;align-items:center;justify-content:center;color:white;font-size:28px;">
+                                    <span class="material-symbols-outlined" style="font-size:32px;">eco</span>
+                                </div>
+                                <div>
+                                    <p class="title-md mb-1">Business Logo</p>
+                                    <p class="body-sm" style="color:var(--on-surface-variant);">This name will appear on
+                                        all your digital ledgers and receipts.</p>
+                                    <button class="btn btn-sm btn-outline mt-3"
+                                        onclick="showToast('Upload coming soon!')">
+                                        <span class="material-symbols-outlined icon-sm">upload</span>
+                                        Upload Logo
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col gap-5">
+                                <div class="form-group">
+                                    <label class="form-label">Business Name</label>
+                                    <input type="text" class="form-input" id="set-business" value="">
+                                </div>
+                                <div class="grid grid-2 gap-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Email Address</label>
+                                        <input type="email" class="form-input" id="set-email" value="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Phone Number</label>
+                                        <input type="tel" class="form-input" id="set-phone" value="">
+                                    </div>
+                                </div>
+                                <div class="grid grid-2 gap-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Currency</label>
+                                        <select class="form-input" id="set-currency">
+                                            <option value="INR">₹ Indian Rupee (INR)</option>
+                                            <option value="USD">$ US Dollar (USD)</option>
+                                            <option value="GBP">£ British Pound (GBP)</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Language</label>
+                                        <select class="form-input" id="set-language">
+                                            <option value="English">English</option>
+                                            <option value="Hindi">Hindi</option>
+                                            <option value="Marathi">Marathi</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end mt-8">
+                                <button class="btn btn-primary" onclick="saveSettings()">
+                                    <span class="material-symbols-outlined icon-sm">save</span>
+                                    Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profile Tab -->
+                    <div id="tab-profile" class="settings-tab" style="display:none;">
+                        <div class="card card-elevated card-lg mb-6">
+                            <h2 class="headline-md mb-6">Profile Information</h2>
+                            <div class="flex items-center gap-6 mb-8">
+                                <div style="width:80px;height:80px;border-radius:var(--radius-full);background:linear-gradient(135deg,var(--accent-secondary),var(--primary-container));display:flex;align-items:center;justify-content:center;color:white;font-family:var(--font-headline);font-weight:700;font-size:1.75rem;"
+                                    id="profile-avatar">AM</div>
+                                <div>
+                                    <h3 class="title-lg" id="profile-name">Arjun Mehta</h3>
+                                    <p class="body-sm" style="color:var(--on-surface-variant);" id="profile-email">
+                                        arjun@rupeesradar.com</p>
+                                    <span class="chip chip-success mt-2">Premium Plan</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-5">
+                                <div class="form-group">
+                                    <label class="form-label">Display Name</label>
+                                    <input type="text" class="form-input" id="set-name" value="">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Bio</label>
+                                    <textarea class="form-input" id="set-bio"
+                                        placeholder="A short bio about your business...">Passionate tutor dedicated to nurturing students' growth in Mathematics and Science.</textarea>
+                                </div>
+                            </div>
+                            <div class="flex justify-end mt-8">
+                                <button class="btn btn-primary" onclick="saveProfile()">
+                                    <span class="material-symbols-outlined icon-sm">save</span>
+                                    Update Profile
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Tab -->
+                    <div id="tab-security" class="settings-tab" style="display:none;">
+                        <div class="card card-elevated card-lg mb-6">
+                            <h2 class="headline-md mb-6">Security</h2>
+                            <div class="flex flex-col gap-6">
+                                <div class="flex items-center justify-between"
+                                    style="padding:var(--space-5);background:var(--surface-container-high);border-radius:var(--radius-md);">
+                                    <div>
+                                        <p class="title-md">Two-Factor Authentication</p>
+                                        <p class="body-sm" style="color:var(--on-surface-variant);">Add an extra layer
+                                            of security with OTP verification</p>
+                                    </div>
+                                    <label class="toggle">
+                                        <input type="checkbox" id="set-2fa" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+
+                                <div
+                                    style="padding:var(--space-5);background:var(--surface-container-high);border-radius:var(--radius-md);">
+                                    <p class="title-md mb-4">Change Password</p>
+                                    <div class="flex flex-col gap-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Current Password</label>
+                                            <input type="password" class="form-input" placeholder="••••••••">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">New Password</label>
+                                            <input type="password" class="form-input" placeholder="••••••••">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Confirm New Password</label>
+                                            <input type="password" class="form-input" placeholder="••••••••">
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary btn-sm mt-4"
+                                        onclick="showToast('Password updated!')">
+                                        <span class="material-symbols-outlined icon-sm">lock_reset</span>
+                                        Update Password
+                                    </button>
+                                </div>
+
+                                <div
+                                    style="padding:var(--space-5);background:var(--error-container);border-radius:var(--radius-md);">
+                                    <p class="title-md" style="color:var(--on-error-container);">Danger Zone</p>
+                                    <p class="body-sm mt-1 mb-4" style="color:var(--on-error-container);opacity:0.8;">
+                                        Once you delete your account, there is no going back. Please be certain.</p>
+                                    <button class="btn btn-sm btn-error"
+                                        onclick="showToast('Account deletion disabled in demo', 'warning')">
+                                        <span class="material-symbols-outlined icon-sm">delete_forever</span>
+                                        Delete Account
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notifications Tab -->
+                    <div id="tab-notifications" class="settings-tab" style="display:none;">
+                        <div class="card card-elevated card-lg mb-6">
+                            <h2 class="headline-md mb-6">Notification Preferences</h2>
+                            <div class="flex flex-col gap-4">
+                                <div class="flex items-center justify-between"
+                                    style="padding:var(--space-4);background:var(--surface-container-high);border-radius:var(--radius-md);">
+                                    <div>
+                                        <p class="title-sm">Email Notifications</p>
+                                        <p class="body-sm" style="color:var(--on-surface-variant);">Receive updates
+                                            about fee collection and insights</p>
+                                    </div>
+                                    <label class="toggle">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between"
+                                    style="padding:var(--space-4);background:var(--surface-container-high);border-radius:var(--radius-md);">
+                                    <div>
+                                        <p class="title-sm">SMS Alerts</p>
+                                        <p class="body-sm" style="color:var(--on-surface-variant);">Send payment
+                                            reminders to parents</p>
+                                    </div>
+                                    <label class="toggle">
+                                        <input type="checkbox">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between"
+                                    style="padding:var(--space-4);background:var(--surface-container-high);border-radius:var(--radius-md);">
+                                    <div>
+                                        <p class="title-sm">Weekly Digest</p>
+                                        <p class="body-sm" style="color:var(--on-surface-variant);">Receive a weekly
+                                            financial summary</p>
+                                    </div>
+                                    <label class="toggle">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between"
+                                    style="padding:var(--space-4);background:var(--surface-container-high);border-radius:var(--radius-md);">
+                                    <div>
+                                        <p class="title-sm">Push Notifications</p>
+                                        <p class="body-sm" style="color:var(--on-surface-variant);">Browser push for
+                                            urgent alerts</p>
+                                    </div>
+                                    <label class="toggle">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between"
+                                    style="padding:var(--space-4);background:var(--surface-container-high);border-radius:var(--radius-md);">
+                                    <div>
+                                        <p class="title-sm">Marketing Updates</p>
+                                        <p class="body-sm" style="color:var(--on-surface-variant);">Tips and news from
+                                            the Rupees Radar team</p>
+                                    </div>
+                                    <label class="toggle">
+                                        <input type="checkbox">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="flex justify-end mt-6">
+                                <button class="btn btn-primary" onclick="showToast('Preferences saved!')">
+                                    <span class="material-symbols-outlined icon-sm">save</span>
+                                    Save Preferences
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <nav class="bottom-nav" id="bottom-nav"></nav>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSidebar('settings');
+
+            // Load settings
+            const settings = Store.get('settings', {});
+            const user = Store.get('user', {});
+
+            document.getElementById('set-business').value = settings.businessName || user.business || '';
+            document.getElementById('set-email').value = settings.email || user.email || '';
+            document.getElementById('set-phone').value = settings.phone || user.phone || '';
+            document.getElementById('set-currency').value = settings.currency || 'INR';
+            document.getElementById('set-language').value = settings.language || 'English';
+            document.getElementById('set-name').value = user.name || '';
+            document.getElementById('set-2fa').checked = settings.twoFA !== false;
+
+            const initials = (user.name || 'AM').split(' ').map(n => n[0]).join('');
+            document.getElementById('profile-avatar').textContent = initials;
+            document.getElementById('profile-name').textContent = user.name || 'Arjun Mehta';
+            document.getElementById('profile-email').textContent = user.email || 'arjun@rupeesradar.com';
+        });
+
+        function switchTab(btn, tab) {
+            document.querySelectorAll('[data-tab]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.settings-tab').forEach(t => t.style.display = 'none');
+            document.getElementById(`tab-${tab}`).style.display = 'block';
+        }
+
+        function saveSettings() {
+            const settings = Store.get('settings', {});
+            settings.businessName = document.getElementById('set-business').value;
+            settings.email = document.getElementById('set-email').value;
+            settings.phone = document.getElementById('set-phone').value;
+            settings.currency = document.getElementById('set-currency').value;
+            settings.language = document.getElementById('set-language').value;
+            Store.set('settings', settings);
+
+            // Update user too
+            const user = Store.get('user', {});
+            user.business = settings.businessName;
+            user.email = settings.email;
+            user.phone = settings.phone;
+            Store.set('user', user);
+
+            showToast('Settings saved successfully!');
+        }
+
+        function saveProfile() {
+            const user = Store.get('user', {});
+            user.name = document.getElementById('set-name').value;
+            Store.set('user', user);
+
+            const initials = user.name.split(' ').map(n => n[0]).join('');
+            document.getElementById('profile-avatar').textContent = initials;
+            document.getElementById('profile-name').textContent = user.name;
+
+            showToast('Profile updated!');
+            renderSidebar('settings');
+        }
+    </script>
+</body>
+
+</html>

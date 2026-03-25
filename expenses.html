@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Track and manage expenses on Rupees Radar - The Organic Ledger.">
+    <title>Rupees Radar | Expenses</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>">
+</head>
+
+<body>
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar"></aside>
+        <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+        <header class="mobile-header" id="mobile-header"></header>
+
+        <main class="main-content">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8 animate-slide-up">
+                <div>
+                    <h1 class="page-title">Expenses</h1>
+                    <p class="page-subtitle">Total Outstanding Expenses</p>
+                </div>
+                <button class="btn btn-primary" onclick="openModal('add-expense-modal')">
+                    <span class="material-symbols-outlined icon-sm">add_circle</span>
+                    Log New Expense
+                </button>
+            </div>
+
+            <!-- Total Outstanding Card -->
+            <div class="card card-primary card-lg mb-8 animate-slide-up delay-1">
+                <p class="label-md" style="opacity:0.7;">Outstanding Amount</p>
+                <p class="display-lg" style="margin:var(--space-2) 0;" id="total-outstanding">₹42,850.00</p>
+                <div class="flex gap-6 mt-4">
+                    <div>
+                        <p class="label-sm" style="opacity:0.6;">Paid this month</p>
+                        <p class="title-md" id="paid-total" style="color:var(--primary-fixed);">₹27,650</p>
+                    </div>
+                    <div>
+                        <p class="label-sm" style="opacity:0.6;">Pending</p>
+                        <p class="title-md" id="pending-total" style="color:var(--primary-fixed-dim);">₹27,000</p>
+                    </div>
+                    <div>
+                        <p class="label-sm" style="opacity:0.6;">Overdue</p>
+                        <p class="title-md" id="overdue-total" style="color:var(--error-container);">₹4,200</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="grid grid-2 mb-8">
+                <div class="card card-elevated animate-slide-up delay-2">
+                    <h3 class="title-lg mb-6">Expense Breakdown</h3>
+                    <div class="chart-container" style="height:240px;">
+                        <canvas id="expense-donut"></canvas>
+                    </div>
+                </div>
+                <div class="card card-elevated animate-slide-up delay-3">
+                    <h3 class="title-lg mb-6">Monthly Spending Trend</h3>
+                    <div class="chart-container" style="height:240px;">
+                        <canvas id="expense-trend"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search & Filter -->
+            <div class="flex justify-between items-center mb-6 animate-slide-up delay-3">
+                <div class="search-bar" style="max-width:320px;">
+                    <span class="material-symbols-outlined">search</span>
+                    <input type="text" placeholder="Search expenses..." id="expense-search" oninput="filterExpenses()">
+                </div>
+                <div class="flex gap-2">
+                    <select class="form-input"
+                        style="padding:var(--space-2) var(--space-4);border-radius:var(--radius-full);font-size:0.8125rem;"
+                        id="expense-status-filter" onchange="filterExpenses()">
+                        <option value="">All Status</option>
+                        <option value="Paid">Paid</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Overdue">Overdue</option>
+                    </select>
+                    <select class="form-input"
+                        style="padding:var(--space-2) var(--space-4);border-radius:var(--radius-full);font-size:0.8125rem;"
+                        id="expense-cat-filter" onchange="filterExpenses()">
+                        <option value="">All Categories</option>
+                        <option value="Supplies">Supplies</option>
+                        <option value="Utilities">Utilities</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Maintenance">Maintenance</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Expenses Table -->
+            <div class="card card-elevated animate-slide-up delay-4">
+                <table class="data-table" id="expense-table">
+                    <thead>
+                        <tr>
+                            <th>Expense</th>
+                            <th>Category</th>
+                            <th>Vendor</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expense-tbody"></tbody>
+                </table>
+            </div>
+
+            <!-- Pending Disbursements -->
+            <div class="card mt-8 animate-slide-up delay-5">
+                <h3 class="title-lg mb-4">
+                    <span class="material-symbols-outlined icon-sm"
+                        style="color:var(--accent-secondary);vertical-align:-2px;">schedule</span>
+                    Pending Disbursements
+                </h3>
+                <div class="flex flex-col gap-3" id="pending-list"></div>
+            </div>
+        </main>
+
+        <nav class="bottom-nav" id="bottom-nav"></nav>
+    </div>
+
+    <!-- Add/Edit Expense Modal -->
+    <div class="modal-overlay" id="add-expense-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="expense-modal-title">Log New Expense</h3>
+                <button class="modal-close" onclick="closeModal('add-expense-modal')">
+                    <span class="material-symbols-outlined icon-sm">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Expense Title</label>
+                    <input type="text" class="form-input" id="e-title" placeholder="Classroom Supplies">
+                </div>
+                <div class="grid grid-2 gap-4">
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <select class="form-input" id="e-category">
+                            <option value="Supplies">Supplies</option>
+                            <option value="Utilities">Utilities</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Maintenance">Maintenance</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Amount (₹)</label>
+                        <input type="number" class="form-input" id="e-amount" placeholder="8500">
+                    </div>
+                </div>
+                <div class="grid grid-2 gap-4">
+                    <div class="form-group">
+                        <label class="form-label">Vendor</label>
+                        <input type="text" class="form-input" id="e-vendor" placeholder="Sharma Stationery">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date</label>
+                        <input type="date" class="form-input" id="e-date">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select class="form-input" id="e-status">
+                        <option value="Pending">Pending</option>
+                        <option value="Paid">Paid</option>
+                        <option value="Overdue">Overdue</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeModal('add-expense-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveExpense()">
+                    <span class="material-symbols-outlined icon-sm">check</span>
+                    Save Expense
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        let editingExpenseId = null;
+
+        const catIcons = {
+            Supplies: 'inventory_2',
+            Utilities: 'bolt',
+            Transport: 'local_shipping',
+            Technology: 'computer',
+            Maintenance: 'build',
+            Other: 'category'
+        };
+
+        const catColors = {
+            Supplies: '#1b4332',
+            Utilities: '#588157',
+            Transport: '#2d6a4f',
+            Technology: '#40916c',
+            Maintenance: '#344e41',
+            Other: '#717973'
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSidebar('expenses');
+            renderExpenses();
+            document.getElementById('e-date').value = new Date().toISOString().split('T')[0];
+
+            setTimeout(() => {
+                const expenses = Store.get('expenses', []);
+
+                // Category breakdown donut
+                const catTotals = {};
+                expenses.forEach(e => {
+                    catTotals[e.category] = (catTotals[e.category] || 0) + e.amount;
+                });
+                const donutData = Object.entries(catTotals).map(([label, value]) => ({
+                    label, value, color: catColors[label] || '#717973'
+                }));
+
+                const donut = new SimpleChart('expense-donut');
+                donut.drawDonutChart(donutData);
+
+                // Spending trend
+                const trend = new SimpleChart('expense-trend');
+                trend.drawLineChart({
+                    labels: ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    values: [38000, 42000, 36000, 48000, 44000, 42850]
+                });
+            }, 300);
+        });
+
+        function renderExpenses() {
+            const expenses = Store.get('expenses', []);
+            const tbody = document.getElementById('expense-tbody');
+            const pendingList = document.getElementById('pending-list');
+
+            const paid = expenses.filter(e => e.status === 'Paid').reduce((t, e) => t + e.amount, 0);
+            const pending = expenses.filter(e => e.status === 'Pending').reduce((t, e) => t + e.amount, 0);
+            const overdue = expenses.filter(e => e.status === 'Overdue').reduce((t, e) => t + e.amount, 0);
+
+            document.getElementById('total-outstanding').textContent = formatCurrency(pending + overdue) + '.00';
+            document.getElementById('paid-total').textContent = formatCurrency(paid);
+            document.getElementById('pending-total').textContent = formatCurrency(pending);
+            document.getElementById('overdue-total').textContent = formatCurrency(overdue);
+
+            renderExpenseRows(expenses, tbody);
+
+            // Pending disbursements
+            const pendingExpenses = expenses.filter(e => e.status === 'Pending' || e.status === 'Overdue');
+            pendingList.innerHTML = pendingExpenses.length ? pendingExpenses.map(e => {
+                const chipClass = e.status === 'Pending' ? 'chip-warning' : 'chip-error';
+                return `
+          <div class="alert-card">
+            <div class="alert-icon ${e.status === 'Overdue' ? 'warning' : 'info'}">
+              <span class="material-symbols-outlined icon-sm">${catIcons[e.category] || 'category'}</span>
+            </div>
+            <div style="flex:1;">
+              <p class="title-sm">${e.title}</p>
+              <p class="body-sm" style="color:var(--on-surface-variant);">${e.vendor} • ${new Date(e.date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })}</p>
+            </div>
+            <span class="title-sm" style="color:var(--error);">${formatCurrency(e.amount)}</span>
+            <span class="chip ${chipClass}">${e.status}</span>
+            <button class="btn btn-sm btn-outline" onclick="markPaid(${e.id})">Pay</button>
+          </div>`;
+            }).join('') : '<p class="body-sm" style="color:var(--outline);text-align:center;padding:var(--space-4);">All caught up! No pending disbursements.</p>';
+        }
+
+        function renderExpenseRows(expenses, tbody) {
+            tbody.innerHTML = expenses.map(e => {
+                const chipClass = e.status === 'Paid' ? 'chip-success' : e.status === 'Pending' ? 'chip-warning' : 'chip-error';
+                return `
+          <tr>
+            <td>
+              <div class="flex items-center gap-3">
+                <div class="alert-icon info" style="width:32px;height:32px;background:${catColors[e.category]}20;color:${catColors[e.category]};">
+                  <span class="material-symbols-outlined icon-sm">${catIcons[e.category] || 'category'}</span>
+                </div>
+                <span class="title-sm">${e.title}</span>
+              </div>
+            </td>
+            <td><span class="chip chip-neutral">${e.category}</span></td>
+            <td class="body-sm">${e.vendor}</td>
+            <td class="body-sm" style="color:var(--on-surface-variant);">${new Date(e.date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
+            <td class="title-sm" style="color:var(--error);">-${formatCurrency(e.amount)}</td>
+            <td><span class="chip ${chipClass}">${e.status}</span></td>
+            <td>
+              <div class="flex gap-2">
+                <button class="btn-icon" style="width:32px;height:32px;" onclick="editExpense(${e.id})">
+                  <span class="material-symbols-outlined icon-sm">edit</span>
+                </button>
+                <button class="btn-icon" style="width:32px;height:32px;" onclick="deleteExpense(${e.id})">
+                  <span class="material-symbols-outlined icon-sm" style="color:var(--error);">delete</span>
+                </button>
+              </div>
+            </td>
+          </tr>`;
+            }).join('');
+        }
+
+        function filterExpenses() {
+            const search = document.getElementById('expense-search').value.toLowerCase();
+            const statusFilter = document.getElementById('expense-status-filter').value;
+            const catFilter = document.getElementById('expense-cat-filter').value;
+            const expenses = Store.get('expenses', []);
+            const tbody = document.getElementById('expense-tbody');
+
+            const filtered = expenses.filter(e => {
+                const matchSearch = e.title.toLowerCase().includes(search) || e.vendor.toLowerCase().includes(search);
+                const matchStatus = !statusFilter || e.status === statusFilter;
+                const matchCat = !catFilter || e.category === catFilter;
+                return matchSearch && matchStatus && matchCat;
+            });
+
+            renderExpenseRows(filtered, tbody);
+        }
+
+        function editExpense(id) {
+            const expenses = Store.get('expenses', []);
+            const e = expenses.find(e => e.id === id);
+            if (!e) return;
+
+            editingExpenseId = id;
+            document.getElementById('expense-modal-title').textContent = 'Edit Expense';
+            document.getElementById('e-title').value = e.title;
+            document.getElementById('e-category').value = e.category;
+            document.getElementById('e-amount').value = e.amount;
+            document.getElementById('e-vendor').value = e.vendor;
+            document.getElementById('e-date').value = e.date;
+            document.getElementById('e-status').value = e.status;
+            openModal('add-expense-modal');
+        }
+
+        function saveExpense() {
+            const title = document.getElementById('e-title').value.trim();
+            if (!title) { showToast('Please enter expense title', 'warning'); return; }
+
+            const expenses = Store.get('expenses', []);
+            const data = {
+                title,
+                category: document.getElementById('e-category').value,
+                amount: parseInt(document.getElementById('e-amount').value) || 0,
+                vendor: document.getElementById('e-vendor').value,
+                date: document.getElementById('e-date').value,
+                status: document.getElementById('e-status').value
+            };
+
+            if (editingExpenseId) {
+                const idx = expenses.findIndex(e => e.id === editingExpenseId);
+                if (idx !== -1) { data.id = editingExpenseId; expenses[idx] = { ...expenses[idx], ...data }; }
+                editingExpenseId = null;
+                showToast('Expense updated successfully');
+            } else {
+                data.id = Date.now();
+                expenses.push(data);
+                showToast('Expense logged successfully');
+            }
+
+            Store.set('expenses', expenses);
+            closeModal('add-expense-modal');
+            renderExpenses();
+
+            // Reset
+            document.getElementById('expense-modal-title').textContent = 'Log New Expense';
+            ['e-title', 'e-vendor', 'e-amount'].forEach(id => document.getElementById(id).value = '');
+        }
+
+        function deleteExpense(id) {
+            if (!confirm('Remove this expense record?')) return;
+            const expenses = Store.get('expenses', []).filter(e => e.id !== id);
+            Store.set('expenses', expenses);
+            renderExpenses();
+            showToast('Expense removed', 'delete');
+        }
+
+        function markPaid(id) {
+            const expenses = Store.get('expenses', []);
+            const idx = expenses.findIndex(e => e.id === id);
+            if (idx !== -1) {
+                expenses[idx].status = 'Paid';
+                Store.set('expenses', expenses);
+                renderExpenses();
+                showToast('Expense marked as paid!', 'check_circle');
+            }
+        }
+    </script>
+</body>
+
+</html>
