@@ -112,6 +112,8 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>
   <script src="app.js"></script>
   <script>
     function toggleAuth(e, form) {
@@ -120,38 +122,54 @@
       document.getElementById('register-form').style.display = form === 'register' ? 'block' : 'none';
     }
 
-    function handleLogin(e) {
+    async function handleLogin(e) {
       e.preventDefault();
       const email = document.getElementById('login-email').value;
       const password = document.getElementById('login-password').value;
 
       if (email && password) {
-        initDefaultData();
-        const user = Store.get('user');
-        if (user) {
-          user.email = email;
-          Store.set('user', user);
+        const btn = e.target.querySelector('button');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = 'Signing in...';
+        btn.disabled = true;
+
+        const { data, error } = await Auth.signIn(email, password);
+
+        if (error) {
+          alert("Login error: " + error.message);
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+        } else {
+          initDefaultData();
+          Store.set('loggedIn', true);
+          window.location.href = 'dashboard.html';
         }
-        Store.set('loggedIn', true);
-        window.location.href = 'dashboard.html';
       }
     }
 
-    function handleRegister(e) {
+    async function handleRegister(e) {
       e.preventDefault();
       const name = document.getElementById('reg-name').value;
       const email = document.getElementById('reg-email').value;
+      const password = document.getElementById('reg-password').value;
       const business = document.getElementById('reg-business').value;
 
-      initDefaultData();
-      const user = Store.get('user');
-      user.name = name;
-      user.email = email;
-      user.business = business;
-      Store.set('user', user);
-      Store.set('loggedIn', true);
+      const btn = e.target.querySelector('button');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = 'Creating...';
+      btn.disabled = true;
 
-      window.location.href = 'sector.html';
+      const { data, error } = await Auth.signUp(email, password, name, business);
+
+      if (error) {
+        alert("Registration error: " + error.message);
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      } else {
+        initDefaultData();
+        Store.set('loggedIn', true);
+        window.location.href = 'sector.html';
+      }
     }
 
     // Check if already logged in
