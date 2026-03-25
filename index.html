@@ -116,6 +116,14 @@
   <script src="supabase-v2.js"></script>
   <script src="app.js"></script>
   <script>
+    // Failsafe Inline Auth to guarantee execution
+    if (!window.Auth) {
+      window.Auth = {
+        async signIn() { return { error: { message: "External script failed to load. Are you on the GitHub Pages link?" } }; },
+        async signUp() { return { error: { message: "External script failed to load. Are you on the GitHub Pages link?" } }; }
+      };
+    }
+
     function toggleAuth(e, form) {
       e.preventDefault();
       document.getElementById('login-form').style.display = form === 'login' ? 'block' : 'none';
