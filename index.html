@@ -124,51 +124,99 @@
 
     async function handleLogin(e) {
       e.preventDefault();
-      const email = document.getElementById('login-email').value;
-      const password = document.getElementById('login-password').value;
+      const oldErr = e.target.querySelector('.form-err');
+      if (oldErr) oldErr.remove();
 
-      if (email && password) {
-        const btn = e.target.querySelector('button');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = 'Signing in...';
-        btn.disabled = true;
+      try {
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
 
-        const { data, error } = await Auth.signIn(email, password);
+        if (email && password) {
+          const btn = e.target.querySelector('button');
+          const originalText = btn.innerHTML;
+          btn.innerHTML = 'Signing in...';
+          btn.disabled = true;
 
-        if (error) {
-          alert("Login error: " + error.message);
-          btn.innerHTML = originalText;
-          btn.disabled = false;
-        } else {
-          initDefaultData();
-          Store.set('loggedIn', true);
-          window.location.href = 'dashboard.html';
+          const res = await Auth.signIn(email, password);
+
+          if (res.error) {
+            const errDiv = document.createElement('div');
+            errDiv.className = 'form-err';
+            errDiv.style.color = 'red';
+            errDiv.style.padding = '8px';
+            errDiv.style.background = '#ffe5e5';
+            errDiv.style.borderRadius = '6px';
+            errDiv.innerText = "Login Failed: " + (res.error.message || JSON.stringify(res.error));
+            e.target.prepend(errDiv);
+
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+          } else {
+            initDefaultData();
+            Store.set('loggedIn', true);
+            window.location.href = 'dashboard.html';
+          }
         }
+      } catch (err) {
+        const errDiv = document.createElement('div');
+        errDiv.className = 'form-err';
+        errDiv.style.color = 'white';
+        errDiv.style.padding = '8px';
+        errDiv.style.background = 'red';
+        errDiv.style.borderRadius = '6px';
+        errDiv.innerText = "Unexpected Error: " + err.message;
+        e.target.prepend(errDiv);
+        e.target.querySelector('button').disabled = false;
+        e.target.querySelector('button').innerHTML = 'Retry';
       }
     }
 
     async function handleRegister(e) {
       e.preventDefault();
-      const name = document.getElementById('reg-name').value;
-      const email = document.getElementById('reg-email').value;
-      const password = document.getElementById('reg-password').value;
-      const business = document.getElementById('reg-business').value;
+      const oldErr = e.target.querySelector('.form-err');
+      if (oldErr) oldErr.remove();
 
-      const btn = e.target.querySelector('button');
-      const originalText = btn.innerHTML;
-      btn.innerHTML = 'Creating...';
-      btn.disabled = true;
+      try {
+        const name = document.getElementById('reg-name').value;
+        const email = document.getElementById('reg-email').value;
+        const password = document.getElementById('reg-password').value;
+        const business = document.getElementById('reg-business').value;
 
-      const { data, error } = await Auth.signUp(email, password, name, business);
+        const btn = e.target.querySelector('button');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = 'Creating...';
+        btn.disabled = true;
 
-      if (error) {
-        alert("Registration error: " + error.message);
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-      } else {
-        initDefaultData();
-        Store.set('loggedIn', true);
-        window.location.href = 'sector.html';
+        const res = await Auth.signUp(email, password, name, business);
+
+        if (res.error) {
+          const errDiv = document.createElement('div');
+          errDiv.className = 'form-err';
+          errDiv.style.color = 'red';
+          errDiv.style.padding = '8px';
+          errDiv.style.background = '#ffe5e5';
+          errDiv.style.borderRadius = '6px';
+          errDiv.innerText = "Registration Failed: " + (res.error.message || JSON.stringify(res.error));
+          e.target.prepend(errDiv);
+
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+        } else {
+          initDefaultData();
+          Store.set('loggedIn', true);
+          window.location.href = 'sector.html';
+        }
+      } catch (err) {
+        const errDiv = document.createElement('div');
+        errDiv.className = 'form-err';
+        errDiv.style.color = 'white';
+        errDiv.style.padding = '8px';
+        errDiv.style.background = 'red';
+        errDiv.style.borderRadius = '6px';
+        errDiv.innerText = "Unexpected Error: " + err.message;
+        e.target.prepend(errDiv);
+        e.target.querySelector('button').disabled = false;
+        e.target.querySelector('button').innerHTML = 'Retry';
       }
     }
 
